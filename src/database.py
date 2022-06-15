@@ -60,26 +60,43 @@ client.connect(broker_address) #connect to broker
 
 print("Subscribing to topic","covid_italy")
 client.subscribe("covid_italy")
-client.subscribe("covid_italy_col")
-print("Subscribing to topic","covid_italy_col")
 
+print("Subscribing to topic","covid_italy_col")
+client.subscribe("covid_italy_col")
+
+print("Subscribing to topic","covid_italy_age")
+client.subscribe("covid_italy_age")
+
+print("Subscribing to topic","covid_italy_region")
+client.subscribe("covid_italy_region")
 
 db = Database('covid.sqlite')
 
-query = ''' insert into calamaro values ( ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,? )'''
+insert_data = ''' insert into cases values ( ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,? )'''
+insert_regions = ''' insert into regions values ( ?,?,?,?,?,?,?,? )'''
+insert_age = ''' insert into age values ( ?,?,?,?,? )'''
+
 
 def on_message(client, userdata, message):
-    
-    if (message.topic == "covid_italy_col"):
-        cols = eval(str(message.payload.decode("utf-8")))
-        df = pd.DataFrame(columns=cols)
-        db.from_pandas(df, 'calamaro')
-        print("Message arrived")
-    else:
-        line = eval(str(message.payload.decode("utf-8")))
-        db.execute(query, tuple(line))
-        db.commit()
+    data = eval(str(message.payload.decode("utf-8")))
 
+    if message.topic == "covid_italy_col":
+
+        df = pd.DataFrame(columns=data['cols'])
+        db.from_pandas(df, data['table'])
+        print('table', data['table'], 'created')
+
+    elif  message.topic == "covid_italy":
+        db.execute(insert_data, tuple(data))
+        db.commit() # understand if the frequence of commits is a problem
+    
+    elif message.topic == "covid_italy_age":
+        db.execute(insert_age, tuple(data))
+        db.commit() # understand if the frequence of commits is a problem
+
+    elif message.topic == "covid_italy_regions":
+        db.execute(insert_regions, tuple(data))
+        db.commit()
 
 client.on_message=on_message        #attach function to callback
 
