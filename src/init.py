@@ -32,14 +32,22 @@ def send_table(table, cols, topic):
 #%% data with cases  and other stats
 df_stats = pd.read_csv(url_tot)                                 # load data
 df_stats = df_stats.drop(columns=drop_stats)                    # drop useless columns
-df_stats = df_stats.set_axis(col_stats, axis=1, inplace=False) # change column names
-df_stats = df_stats.replace({np.nan: None})
+df_stats = df_stats.set_axis(col_stats, axis=1, inplace=False)  # change column names
+df_stats = df_stats.replace({np.nan: 0})
+
+f = df_stats.select_dtypes(np.number).drop(columns = ['lat', 'long'])    # select only numeric columns
+df_stats[f.columns]= f.round().astype('Int64')      
+data_types_stats = df_stats.dtypes.apply(lambda x: x.name).to_dict()
+                     # convert to int
 
 # %% region and age data
 df_region_age = pd.read_csv(url_region)                                                                     # load data 
 df_region_age = df_region_age.set_axis(col_region, axis=1, inplace=False)                                   # change column names
 df_region = df_region_age.groupby(['region_id', 'zone', 'region_name', 'lat', 'long']).sum().reset_index()  # group by region 
 df_age = df_region_age.drop(columns=['zone','sigla','cn1', 'cn2', 'region_name', 'lat', 'long'])            # drop redundant columns
+
+data_types_region = df_region.dtypes.apply(lambda x: x.name).to_dict()
+data_types_age = df_age.dtypes.apply(lambda x: x.name).to_dict()
 
 
 #%% set up mqtt client
@@ -48,9 +56,9 @@ client = mqtt.Client("carlos")      #create new instance
 client.connect(broker_address)      #connect to broker
 
 # %% nome of the tables and the columns to store in the database 
-stats_col = {'table':'cases', 'cols': list(df_stats)}
-regions_col = {'table':'regions', 'cols': list(df_region)}
-age_col = {'table':'age', 'cols': list(df_age)}
+stats_col = {'table':'cases', 'cols': list(df_stats), 'dtype': data_types_stats}
+regions_col = {'table':'regions', 'cols': list(df_region), 'dtype': data_types_region}
+age_col = {'table':'age', 'cols': list(df_age), 'dtype': data_types_age}
 
 # send tables
 send_table(df_age, age_col, "covid_italy_age")                  # age table

@@ -57,7 +57,8 @@ def on_message(client, userdata, message):
     data = eval(str(message.payload.decode("utf-8")))
 
     if message.topic == "covid_italy_col":
-        df = pd.DataFrame(columns=data['cols'])
+        df = pd.DataFrame(columns=data['cols']).astype(data['dtype'])
+
         db.from_pandas(df, data['table'])
         print('table', data['table'], 'created')
 
