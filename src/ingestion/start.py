@@ -7,6 +7,8 @@ import utils
 import constants as c
 import time
 import schedule
+import logging
+logging.basicConfig(filename='flow.log', encoding='utf-8', level=logging.INFO)
 
 # set up mqtt client
 broker_address="broker.hivemq.com"
@@ -20,7 +22,8 @@ df_stats, data_types_stats = utils.get_df_stats(c.url_tot, c.drop_stats, c.col_s
 df_age, data_types_age = utils.get_df_age(df_region_age, c.drop_age)
 df_region, data_types_region = utils.get_df_region(df_region_age, c.group_by_region)
 
-print('dataframe created')
+logging.info('dataframe created')
+
 
 
 # for each table create a dictionary with the columns name and the datatypes 

@@ -2,6 +2,8 @@ import sqlite3
 import paho.mqtt.client as mqtt #import the client1
 import time
 import pandas as pd
+import logging
+logging.basicConfig(filename='flow.log', level=logging.INFO)
 
 
 insert_data = ''' insert into cases values ( ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,? )'''
@@ -13,7 +15,7 @@ class Database:
     def __init__(self, name):
         self._conn = sqlite3.connect(name)
         self._cursor = self._conn.cursor()
-        print('Connected to database')
+        logging.info('Connected to database')
 
     def __enter__(self):
         return self
@@ -60,7 +62,7 @@ def on_message(client, userdata, message):
         df = pd.DataFrame(columns=data['cols']).astype(data['dtype'])
 
         db.from_pandas(df, data['table'])
-        print('table', data['table'], 'created')
+        logging.info('table'+ data['table']+ 'created')
 
     elif  message.topic == "covid_italy":
         db.execute(insert_data, tuple(data))
@@ -79,13 +81,14 @@ broker_address="broker.hivemq.com"
 client = mqtt.Client("pyclient")   #create new instance
 client.connect(broker_address)     #connect to broker
 client.on_message=on_message       #attach function to callback
-print("Client connected")
+logging.info("Client connected")
 
 # subscribe to topics
-print("Subscribing to topic","covid_italy_col")
-print("Subscribing to topic","covid_italy_age")
-print("Subscribing to topic","covid_italy_region")
-print("Subscribing to topic","covid_italy")
+logging.info("Subscribing to topic covid_italy_col")
+logging.info("Subscribing to topic covid_italy_age")
+logging.info("Subscribing to topic covid_italy_region")
+logging.info("Subscribing to topic covid_italy")
+logging.info('subscribing to topic')
 
 client.subscribe("covid_italy")
 client.subscribe("covid_italy_col")

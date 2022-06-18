@@ -1,6 +1,8 @@
 import pandas as pd
 import numpy as np
 import constants as c
+import logging
+logging.basicConfig(filename='flow.log', level=logging.DEBUG)
 
 def send_table(client, table, cols, topic):
     client.publish("covid_italy_col", str(cols)) 
@@ -8,7 +10,7 @@ def send_table(client, table, cols, topic):
     for index, row in table.iterrows():
         client.publish(topic, str(list(row))) 
         client.loop()
-    print('table', cols['table'], 'sent')
+    logging.info('table'+ cols['table']+ 'sent')
 
 def get_df_region_age(url, col_names):
     df_region_age = pd.read_csv(url)                                                                     # load data 
@@ -43,4 +45,4 @@ def update_stats(client):
     for index, row in df_stats.iterrows():
         client.publish('covid_italy', str(list(row))) 
         client.loop()
-    print('table stats updated')
+    logging.info('table stats updated')

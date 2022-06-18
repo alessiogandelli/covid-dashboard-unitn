@@ -10,4 +10,6 @@ create a more complex schema in order to avoid repetition
 
 use self hosted broker
 
-fix datatypes
+other sql dbsm?
+
+
