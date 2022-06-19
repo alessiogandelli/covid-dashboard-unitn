@@ -5,6 +5,7 @@ import pandas as pd
 import logging
 logging.basicConfig(filename='flow.log', level=logging.INFO)
 
+print("Setup Database")
 
 insert_data = ''' insert into cases values ( ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,? )'''
 insert_regions = ''' insert into regions values ( ?,?,?,?,?,?,?,? )'''

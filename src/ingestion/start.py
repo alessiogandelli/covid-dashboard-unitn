@@ -41,7 +41,9 @@ schedule.every().minute.do(utils.update_stats,client )
 
 
 
+print("Start running")
 while True:
     schedule.run_pending()
+    print("Sleeping...")
     time.sleep(1)
 # %%
