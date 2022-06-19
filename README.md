@@ -13,8 +13,11 @@ use self hosted broker
 other sql dbsm?
 
 # Buld
+```
 docker build --tag python-docker .
+```
 
 # Run
-
+```
 docker run -it python-docker  
+```
