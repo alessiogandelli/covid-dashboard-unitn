@@ -1,3 +1,8 @@
+# db insert query
+insert_stats = ''' insert into stats values ( ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,? )'''
+insert_regions = ''' insert into regions values ( ?,?,?,?,?,?,?,? )'''
+insert_age = ''' insert into age values ( ?,?,?,?,? )'''
+
 ## data source 
 url_tot = 'https://raw.githubusercontent.com/pcm-dpc/COVID-19/master/dati-regioni/dpc-covid19-ita-regioni.csv'
 url_region = 'https://raw.githubusercontent.com/pcm-dpc/COVID-19/master/dati-statistici-riferimento/popolazione-istat-regione-range.csv'
@@ -15,3 +20,13 @@ col_stats = ['date', 'region_id', 'region_name', 'lat', 'long', 'recovered', 'in
 col_region = ['region_id', 'cn1', 'zone', 'cn2','region_name', 'sigla', 'lat', 'long', 'age_group', 'population_males', 'population_females', 'population']
 
 group_by_region = ['region_id', 'zone', 'region_name', 'lat', 'long']
+
+
+# kafka config 
+config_consumer = {'bootstrap.servers': 'localhost:9092',
+          'group.id': 'python_example_group_1',
+          'auto.offset.reset': 'earliest'}
+
+config_producer = {'bootstrap.servers': 'localhost:9092'}
+
+topic = 'covid'

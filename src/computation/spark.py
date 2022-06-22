@@ -37,15 +37,18 @@ labelled.take(5)
 
 ######################################### OTHER TRIAL
 import statsmodels.api as sm
+from pyspark.sql.functions import pandas_udf, PandasUDFType
 import pandas as pd
 # df has four columns: id, y, x1, x2
 url_tot = 'https://raw.githubusercontent.com/pcm-dpc/COVID-19/master/dati-regioni/dpc-covid19-ita-regioni.csv'
 
-df = pd.read_csv(url_tot)
-group_column = 'denominazione_regione'
-y_column = 'y'
-x_columns = 'data'
-schema = df.select(group_column, *x_columns).schema
+#df = pd.read_csv(url_tot)
+group_column = 'region_id'
+y_column = 'total_positive'
+x_columns = 'date'
+schema = df_case.select(group_column, x_columns, y_column).schema
+
+#schema = df_positive.schema
 
 @pandas_udf(schema, PandasUDFType.GROUPED_MAP)
 # Input/output are both a pandas.DataFrame
@@ -58,4 +61,15 @@ def ols(pdf):
 
     return pd.DataFrame([[group_key] + [model.params[i] for i in   x_columns]], columns=[group_column] + x_columns)
 
-beta = df.groupby(group_column).apply(ols)
+beta = df_case.groupby(group_column).applyInPandas(ols, schema)
+
+# %%
+# third trial #####################################################################################################################
+
+df_train = df_case.select(group_column, x_columns, y_column).show(10)
+from pyspark.ml.regression import LinearRegression
+lr = LinearRegression(featuresCol = 'date', labelCol='total_positive', maxIter=10, regParam=0.3, elasticNetParam=0.8)
+lr_model = lr.fit(df_train)
+print("Coefficients: " + str(lr_model.coefficients))
+print("Intercept: " + str(lr_model.intercept))
+# %%
