@@ -55,3 +55,10 @@ utils.send_table(df_age, c.topic, producer, age_col)
 
 
 
+schedule.every().minute.do(utils.update_stats, producer )
+
+
+
+while True:
+    schedule.run_pending()
+    time.sleep(1)

@@ -95,6 +95,16 @@ def listen(consumer, db):
 
 # producer
 
+def update_stats(producer):
+    df_stats, data_types_stats = get_df_stats(c.url_latest, c.drop_stats, c.col_stats)
+    for index, row in df_stats.iterrows():
+        producer.produce(c.topic, key = 'stats', value = str(list(row))) 
+
+    producer.poll(10) # Wait for delivery
+    producer.flush() # Flush pending messages
+ 
+    logging.info('table stats updated')
+
 def send_table(table, topic, producer, info):
     producer.produce(topic, key = 'info', value = str(info))
     producer.poll(0)
