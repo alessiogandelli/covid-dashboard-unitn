@@ -55,8 +55,7 @@ utils.send_table(df_age, c.topic, producer, age_col)
 
 
 
-schedule.every().minute.do(utils.update_stats, producer )
-
+schedule.every().day.do(utils.update_stats, producer )
 
 
 while True:
