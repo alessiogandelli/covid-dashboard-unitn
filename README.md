@@ -18,7 +18,22 @@ understand kafka config
 
 other sql dbsm?
 
-# Buld
+# Frontend
+
+## Build
+```
+cd dash-frontend
+docker build -t dash-frontend .  
+```
+
+## Run
+```
+docker run -p 8050:8050 dash-frontend
+```
+
+## Backend
+
+# Build
 ```
 docker build --tag python-docker .
 ```
