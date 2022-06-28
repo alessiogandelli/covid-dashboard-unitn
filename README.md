@@ -6,7 +6,7 @@ why sqlite? because it is serverless and lightweight
 
 
 ## todo
-schedule daily refresh 
+schedule daily refresh now it's minute refresh
 
 create a more complex schema in order to avoid repetition 
 
@@ -49,6 +49,7 @@ install jdk
 ```
 pip3 install pyspark 
 ```
+this is for reading sqlite using spark
 ```
 curl -O https://repo1.maven.org/maven2/org/xerial/sqlite-jdbc/3.34.0/sqlite-jdbc-3.34.0.jar
 ```
