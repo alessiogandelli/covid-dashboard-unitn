@@ -22,7 +22,7 @@ spark = SparkSession.builder.master("local").appName("SQLite JDBC").config(
     "{}/sqlite-jdbc-3.34.0.jar".format(os.getcwd())).getOrCreate()
 
 
-# %% load data in a spark-friendly way ( using spark dataframes )
+#load data in a spark-friendly way ( using spark dataframes )
 def fetch_data():
     db = spark.read.format("jdbc").option("url", "jdbc:sqlite:covid.sqlite")
     df_stats = db.option("dbtable", "stats").load()       # load stats data
@@ -30,9 +30,7 @@ def fetch_data():
     df_age = db.option("dbtable", "age").load()         # load age data
     return df_stats, df_regions, df_age
 
-# %% prepare data
-
-
+# prepare data for regession
 def prepare_data(df_stats):
 
     # select only relevant columns ( date, region_id, total_cases )
@@ -58,7 +56,7 @@ def prepare_data(df_stats):
     
     
     return df
-# %%
+# 
 # perform linear regression on all the regions and save the model
 
 
