@@ -3,8 +3,10 @@ import constants as c
 import pandas as pd
 import logging
 import numpy as np
+from confluent_kafka import Producer
 
-logging.basicConfig(filename='flow.log', level=logging.DEBUG)
+
+logging.basicConfig(filename='flow.log', level=logging.DEBUG, format='%(asctime)s:%(process)d:%(levelname)s:%(message)s')
 
 class Database:
     def __init__(self, name):
@@ -104,6 +106,10 @@ def update_stats(producer):
     producer.flush() # Flush pending messages
  
     logging.info('table stats updated')
+    producer.produce(c.topic, key = 'compute', value = str(list(row))) # if i put a string in the value it gives me name 'covid' not found 
+
+   
+
 
 def send_table(table, topic, producer, info):
     producer.produce(topic, key = 'info', value = str(info))
