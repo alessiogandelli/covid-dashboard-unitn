@@ -1,3 +1,25 @@
+# Frontend
+
+## Build
+```
+cd dash-frontend
+docker build -t dash-frontend .  
+```
+
+## Run
+```
+docker run -p 8050:8050 dash-frontend
+```
+
+## Run locally
+```
+python3 ./app/app.py
+```
+
+===========
+
+
+
 # docker-dash
 
 Run a Dash app with a docker image on AWS ECS.
