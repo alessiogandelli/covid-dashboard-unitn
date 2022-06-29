@@ -5,11 +5,14 @@ import dash_core_components as dcc
 from dash.dependencies import Input, Output, State
 from dash import no_update
 import sys
+import db_helper
 
 app = dash.Dash(
     __name__,
     external_stylesheets=[dbc.themes.BOOTSTRAP]
 )
+
+positive_model = db_helper.get_model("total_cases")
 
 app.layout = dbc.Container(
     dbc.Row(
@@ -17,7 +20,7 @@ app.layout = dbc.Container(
             [
                 dbc.Card(
                     [
-                        html.H2('Covid Dashboard Italy',className='card-title'),
+                        html.H2('Covid Dashboard Italy' + positive_model['name'],className='card-title'),
                         
                         html.Div(id='output'),
                         dbc.Input(id='input',placeholder='Type here...'),
