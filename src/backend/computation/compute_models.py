@@ -31,21 +31,18 @@ def fetch_data():
     return df_stats, df_regions, df_age
 
 # prepare data for regession
-def prepare_data(df_stats):
+def prepare_data(df_stats, y):
 
     # select only relevant columns ( date, region_id, total_cases )
-    df = df_stats.select(
-        df_stats['date'], df_stats['region_id'], df_stats['total_cases'])
-    # cast date to date type
-    df = df.withColumn('date', df['date'].cast('date'))
+    df = df_stats.select('date', 'region_id', *y)
+    df = df.withColumn('date', df['date'].cast('date'))    # cast date to date type
 
     min_date = df.agg({"date": "min"}).collect()[0][0]  # get max date
     max_date = df.agg({"date": "max"}).collect()[0][0]  # get min date
 
-    # get time passed since start of the pandemic
-    df = df.withColumn('time_passed', datediff(col('date'), lit(min_date)))
-    # select only data from the last week
-    df = df.filter(df['date'] >= max_date - timedelta(days=7))
+    df = df.withColumn('time_passed', datediff(col('date'), lit(min_date)))    # get time passed since start of the pandemic
+    df = df.filter(df['date'] >= max_date - timedelta(days=7))    # select only data from the last week
+
 
     # create data in the format required by the LinearRegression model
     assembler = VectorAssembler(
@@ -63,26 +60,30 @@ def prepare_data(df_stats):
 def compute():
     df_stats, df_regions, df_age = fetch_data()
     logging.info('fetched data')
-    df = prepare_data(df_stats)
+    labels = ['total_cases', 'intensive_care', 'hospitalized', 'domestic_isolation', 'deaths']
+
+    df = prepare_data(df_stats, labels)
     logging.info('prepared data')
 
     regions_ids = df.select('region_id').distinct().rdd.map( lambda x: x[0]).collect()
-    
+    last_day = df.agg({"time_passed": "max"}).collect()[0][0] 
     for i in regions_ids:
 
         # subset data for a single region
         df1 = df.filter(df['region_id'] == i)
-        lr = LinearRegression(featuresCol='features', labelCol='total_cases',
-                              maxIter=10, regParam=0.3, elasticNetParam=0.8)
-        lrModel = lr.fit(df1)
 
+        for y in labels:
 
-        model = {'name': 'total_cases',
-                 'region_id': i,
-                 'intercept': lrModel.intercept,
-                 'coefficients': lrModel.coefficients.toArray().tolist()}
+            lr = LinearRegression(featuresCol='features', labelCol=y, maxIter=10, regParam=0.3, elasticNetParam=0.8)
+            lrModel = lr.fit(df1)
 
-        db_helper.save_model(model)
+            model = {'name': y,
+                     'day': last_day,
+                     'region_id': i,
+                     'intercept': lrModel.intercept,
+                     'coefficients': lrModel.coefficients.toArray().tolist()}
+
+            db_helper.save_model(model)
     logging.info('computed today for all regions')
 
 
@@ -108,4 +109,7 @@ while True:
 
 
 
+# %%
+
+labels = ['total_cases', 'intensive_care', 'hospitalized', 'domestic_isolation', 'deaths']
 # %%
