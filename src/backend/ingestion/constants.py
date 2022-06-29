@@ -30,3 +30,4 @@ config_consumer = {'bootstrap.servers': 'localhost:9092',
 config_producer = {'bootstrap.servers': 'localhost:9092'}
 
 topic = 'covid'
+
