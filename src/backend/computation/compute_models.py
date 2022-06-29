@@ -66,8 +66,8 @@ def compute():
     df = prepare_data(df_stats)
     logging.info('prepared data')
 
-    regions_ids = df.select('region_id').distinct().rdd.map(
-        lambda x: x[0]).collect()
+    regions_ids = df.select('region_id').distinct().rdd.map( lambda x: x[0]).collect()
+    
     for i in regions_ids:
 
         # subset data for a single region

@@ -10,20 +10,8 @@ import logging
 logging.basicConfig(filename='flow.log', encoding='utf-8', level=logging.INFO)
 
 
-# %%
-# Parse the command line.
-#parser = ArgumentParser()
-#parser.add_argument('config_file', type=FileType('r'))
-#args = parser.parse_args()
-
-# Parse the configuration.
-# See https://github.com/edenhill/librdkafka/blob/master/CONFIGURATION.md
-#config_parser = ConfigParser()
-# config_parser.read_file(args.config_file)
-#config = dict(config_parser['default'])
-
 # Create Producer instance
-producer = Producer(c.config_producer)
+producer = Producer(utils.get_kafka_config())
 logging.info('kafka producer created')
 
 
@@ -55,10 +43,10 @@ utils.send_table(df_age, c.topic, producer, age_col)
 
 
 
-schedule.every().minute.do(utils.update_stats, producer)
+#schedule.every().minute.do(utils.update_stats, producer)
 
 #schdule every day at 9 pm
-#schedule.every().day.at("21:00").do(utils.update_regions, producer)
+schedule.every().day.at("21:00").do(utils.update_stats, producer)
 
 
 

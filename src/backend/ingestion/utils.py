@@ -4,9 +4,29 @@ import pandas as pd
 import logging
 import numpy as np
 from confluent_kafka import Producer
-
+from argparse import ArgumentParser, FileType
+from configparser import ConfigParser
 
 logging.basicConfig(filename='flow.log', level=logging.DEBUG, format='%(asctime)s:%(process)d:%(levelname)s:%(message)s')
+
+
+
+def get_kafka_config(consumer = False):
+
+    # Parse the command line.
+    parser = ArgumentParser()
+    parser.add_argument('config_file', type=FileType('r'))
+    parser.add_argument('--reset', action='store_true')
+    args = parser.parse_args()
+
+    # Parse the configuration.
+    config_parser = ConfigParser()
+    config_parser.read_file(args.config_file)
+    config = dict(config_parser['default'])
+    if consumer:
+        config.update(config_parser['consumer'])
+
+    return config 
 
 class Database:
     def __init__(self, name):
@@ -109,7 +129,6 @@ def update_stats(producer):
     producer.produce(c.topic, key = 'compute', value = str(list(row))) # if i put a string in the value it gives me name 'covid' not found 
 
    
-
 
 def send_table(table, topic, producer, info):
     producer.produce(topic, key = 'info', value = str(info))

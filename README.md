@@ -3,6 +3,7 @@ Big data technologies project @ Unitn
 
 
 ## todo
+- add env file
 - complete requirements 
 - schedule daily refresh now it's minute refresh
 - prettify logging 
