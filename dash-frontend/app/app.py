@@ -4,6 +4,7 @@ import dash_html_components as html
 import dash_core_components as dcc
 from dash.dependencies import Input, Output, State
 from dash import no_update
+import sys
 
 app = dash.Dash(
     __name__,
@@ -16,7 +17,7 @@ app.layout = dbc.Container(
             [
                 dbc.Card(
                     [
-                        html.H2('Hello from docker dash!',className='card-title'),
+                        html.H2('Covid Dashboard Italy',className='card-title'),
                         
                         html.Div(id='output'),
                         dbc.Input(id='input',placeholder='Type here...'),
@@ -65,5 +66,5 @@ if __name__ == "__main__":
     app.run_server(
         debug=True,
         port=8050,
-        host='0.0.0.0'
+        host='0.0.0.0' if len(sys.argv) > 1 and sys.argv[1] == "docker" else "127.0.0.1"
     )

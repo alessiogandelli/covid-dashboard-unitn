@@ -12,4 +12,4 @@ EXPOSE 8050
 
 ENV NAME World
 
-CMD ["python", "app/app.py"]
+CMD ["python", "app/app.py", "docker"]
