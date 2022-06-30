@@ -9,7 +9,7 @@ import schedule
 import logging
 logging.basicConfig(filename='flow.log', encoding='utf-8', level=logging.INFO)
 
-
+print("producer.py")
 # Create Producer instance
 producer = Producer(utils.get_kafka_config())
 logging.info('kafka producer created')

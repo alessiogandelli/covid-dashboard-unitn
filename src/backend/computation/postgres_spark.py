@@ -15,7 +15,7 @@ spark = SparkSession \
 
 df = spark.read \
     .format("jdbc") \
-    .option("url", "jdbc:postgresql://localhost:5432/covid") \
+    .option("url", "jdbc:postgresql://db:5432/covid") \
     .option("dbtable", "stats") \
     .option("user", "user") \
     .option("password", "example") \

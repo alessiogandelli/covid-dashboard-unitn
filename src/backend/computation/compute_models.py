@@ -34,7 +34,7 @@ spark = SparkSession \
 
 #load data in a spark-friendly way ( using spark dataframes )
 def fetch_data():
-    db = spark.read.format("jdbc").option("url", "jdbc:postgresql://localhost:5432/covid") \
+    db = spark.read.format("jdbc").option("url", "jdbc:postgresql://db:5432/covid") \
     .option("user", "user").option("password", "example").option("driver", "org.postgresql.Driver")
     df_stats = db.option("dbtable", "stats").load()       # load stats data
     df_regions = db.option("dbtable", "regions").load()     # load regions data
@@ -99,7 +99,7 @@ def compute():
 
 
 # %%
-config_consumer = {'bootstrap.servers': 'localhost:9092',
+config_consumer = {'bootstrap.servers': 'broker:9092',
                    'group.id': 'python_example_group_1',
                    'auto.offset.reset': 'earliest'}
 consumer = Consumer(config_consumer)

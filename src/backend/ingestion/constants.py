@@ -26,11 +26,11 @@ group_by_region = ['region_id', 'zone', 'region_name', 'lat', 'long']
 
 
 # kafka config 
-config_consumer = {'bootstrap.servers': 'localhost:9092',
+config_consumer = {'bootstrap.servers': 'broker:9092',
           'group.id': 'python_example_group_1',
           'auto.offset.reset': 'earliest'}
 
-config_producer = {'bootstrap.servers': 'localhost:9092'}
+config_producer = {'bootstrap.servers': 'broker:9092'}
 
 topic = 'covid'
 

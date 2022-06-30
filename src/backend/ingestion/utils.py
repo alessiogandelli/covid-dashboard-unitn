@@ -15,7 +15,7 @@ logging.basicConfig(filename='flow.log', level=logging.DEBUG, format='%(asctime)
 
 
 def get_kafka_config(consumer = False):
-
+    print("Loading kafka config")
     # Parse the command line.
     parser = ArgumentParser()
     parser.add_argument('config_file', type=FileType('r'))
@@ -34,7 +34,7 @@ def get_kafka_config(consumer = False):
 class Database:
     def __init__(self, name):
         self._conn = psycopg2.connect(
-                            host='localhost',
+                            host='db',
                             database='covid',
                             user='user',
                             password='example')
@@ -81,7 +81,7 @@ class Database:
         return self.fetchall()
     
     def from_pandas(self, df, table_name, if_exists='replace'):
-        conn_string = 'postgresql://user:example@localhost/covid'
+        conn_string = 'postgresql://user:example@db/covid'
         db = create_engine(conn_string)
         conn = db.connect()
         df.to_sql(table_name, conn, if_exists=if_exists, index=False)
