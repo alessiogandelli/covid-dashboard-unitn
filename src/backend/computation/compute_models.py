@@ -1,7 +1,6 @@
 # %%
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import *
-import pyspark.pandas as ps
 from datetime import timedelta
 import os
 from confluent_kafka import Consumer, OFFSET_BEGINNING
