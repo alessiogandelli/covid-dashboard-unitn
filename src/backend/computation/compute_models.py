@@ -14,16 +14,28 @@ logging.basicConfig(filename='flow.log', level=logging.DEBUG, format='%(asctime)
 
 
 # note this will not work if the sqlite-jdbc jar file and the sqlite one are not in the same folder from where you launch
-spark = SparkSession.builder.master("local").appName("SQLite JDBC").config(
-    "spark.jars",
-    "{}/sqlite-jdbc-3.34.0.jar".format(os.getcwd())).config(
-    "spark.driver.extraClassPath",
-    "{}/sqlite-jdbc-3.34.0.jar".format(os.getcwd())).getOrCreate()
+# spark = SparkSession.builder.master("local").appName("SQLite JDBC").config(
+#     "spark.jars",
+#     "{}/sqlite-jdbc-3.34.0.jar".format(os.getcwd())).config(
+#     "spark.driver.extraClassPath",
+#     "{}/sqlite-jdbc-3.34.0.jar".format(os.getcwd())).getOrCreate()
+
+spark = SparkSession \
+    .builder \
+    .master("local")\
+    .appName("covid-dashboard") \
+    .config("spark.jars", "{}/postgresql-42.4.0.jar".format(os.getcwd())) \
+    .config("spark.executor.extraClassPath", "{}/postgresql-42.4.0.jar".format(os.getcwd())) \
+    .getOrCreate()
+# %%
+
+
 
 
 #load data in a spark-friendly way ( using spark dataframes )
 def fetch_data():
-    db = spark.read.format("jdbc").option("url", "jdbc:sqlite:covid.sqlite")
+    db = spark.read.format("jdbc").option("url", "jdbc:postgresql://localhost:5432/covid") \
+    .option("user", "user").option("password", "example").option("driver", "org.postgresql.Driver")
     df_stats = db.option("dbtable", "stats").load()       # load stats data
     df_regions = db.option("dbtable", "regions").load()     # load regions data
     df_age = db.option("dbtable", "age").load()         # load age data
@@ -111,4 +123,7 @@ while True:
 # %%
 
 labels = ['total_cases', 'intensive_care', 'hospitalized', 'domestic_isolation', 'deaths']
+# %%
+
+
 # %%

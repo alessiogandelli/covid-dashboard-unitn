@@ -132,3 +132,4 @@ venv/
 *.sqlite
 *.jar
 *.sqlite-journal
+.DS_Store

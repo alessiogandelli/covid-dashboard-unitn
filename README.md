@@ -40,6 +40,8 @@ pip3 install pyspark
 this is for reading sqlite using spark
 ```
 curl -O https://repo1.maven.org/maven2/org/xerial/sqlite-jdbc/3.34.0/sqlite-jdbc-3.34.0.jar
+
+https://jdbc.postgresql.org/download/postgresql-42.4.0.jar
 ```
 
 
