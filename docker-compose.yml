@@ -25,6 +25,15 @@ services:
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
 
+  db:
+    image: postgres
+    restart: always
+    container_name: db
+    hostname: db
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: example
+
   # dash-frontend:
   #   image: ./src/dash-frontend
   #   container_name: dash-frontend
