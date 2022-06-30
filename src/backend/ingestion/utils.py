@@ -6,6 +6,9 @@ import numpy as np
 from confluent_kafka import Producer
 from argparse import ArgumentParser, FileType
 from configparser import ConfigParser
+import psycopg2
+from sqlalchemy import create_engine
+
 
 logging.basicConfig(filename='flow.log', level=logging.DEBUG, format='%(asctime)s:%(process)d:%(levelname)s:%(message)s')
 
@@ -30,9 +33,15 @@ def get_kafka_config(consumer = False):
 
 class Database:
     def __init__(self, name):
-        self._conn = sqlite3.connect(name)
+        self._conn = psycopg2.connect(
+                            host='localhost',
+                            database='covid',
+                            user='user',
+                            password='example')
+       
         self._cursor = self._conn.cursor()
-        #logging.info('Connected to database')
+        print('connect db')
+        logging.info('Connected to database')
 
     def __enter__(self):
         return self
@@ -57,7 +66,9 @@ class Database:
         self.connection.close()
 
     def execute(self, sql, params=None):
+   
         self.cursor.execute(sql, params or ())
+        self.commit()
 
     def fetchall(self):
         return self.cursor.fetchall()
@@ -70,7 +81,18 @@ class Database:
         return self.fetchall()
     
     def from_pandas(self, df, table_name, if_exists='replace'):
-        df.to_sql(table_name, self.connection, if_exists=if_exists, index=False)
+        conn_string = 'postgresql://user:example@localhost/covid'
+        db = create_engine(conn_string)
+        conn = db.connect()
+        df.to_sql(table_name, conn, if_exists=if_exists, index=False)
+        print('HO CREATO LA TABELLA')
+    
+    def clean_db(self):
+        self.execute('DROP TABLE IF EXISTS regions')
+        self.execute('DROP TABLE IF EXISTS stats;')
+        self.execute('DROP TABLE IF EXISTS age;')
+        self.commit()
+        print('HO CANCELLATO TUTTO')
 
 ## consumer 
 

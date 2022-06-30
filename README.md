@@ -3,6 +3,11 @@ Big data technologies project @ Unitn
 
 
 ## todo
+- dockerfile for backend 
+- change db to postgres or similar 
+- use env var for connecting db
+
+
 - add env file
 - complete requirements 
 - schedule daily refresh now it's minute refresh

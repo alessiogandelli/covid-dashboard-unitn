@@ -1,7 +1,10 @@
 # db insert query
-insert_stats = ''' insert into stats values ( ?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,? )'''
-insert_regions = ''' insert into regions values ( ?,?,?,?,?,?,?,? )'''
-insert_age = ''' insert into age values ( ?,?,?,?,? )'''
+insert_stats = ''' insert into stats values ( %s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s )'''
+insert_regions = 'insert into regions values (%s,%s,%s,%s,%s,%s,%s,%s)'
+insert_age = ''' insert into age values ( %s,%s,%s,%s,%s )'''
+
+#insert stats query 
+
 
 ## data source 
 url_tot = 'https://raw.githubusercontent.com/pcm-dpc/COVID-19/master/dati-regioni/dpc-covid19-ita-regioni.csv'
