@@ -37,7 +37,7 @@ services:
     environment:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: example
-      POSTGRES_DB: covid
+      #POSTGRES_DB: covid
 
   backend:
     image: backend
@@ -53,6 +53,7 @@ services:
   dash-frontend:
     image: dash-frontend
     build: ./src/dash-frontend
+    platform: linux/amd64 # Make backend work with M1 Macs
     container_name: dash-frontend
     ports:
       - "8050:8050"

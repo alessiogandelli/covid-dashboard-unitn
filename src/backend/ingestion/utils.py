@@ -33,14 +33,18 @@ def get_kafka_config(consumer = False):
     return config 
 
 class Database:
-    def __init__(self, name):
-        dbname = 'covid'
+    def __init__(self, dbname):
         print('connecting to default database ...')
-        self._conn = psycopg2.connect(host = 'db', user ='user', password = 'example')
+        self._conn = psycopg2.connect(database="postgres", host = 'db', user ='user', password = 'example')
         self._conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
         self._cursor = self._conn.cursor()
+
+        print("Deleting database if exists " + dbname)
+        self._cursor.execute('DROP DATABASE IF EXISTS ' + dbname)
+
         print("Creating database " + dbname)
         self._cursor.execute('CREATE DATABASE ' + dbname)
+
         self._cursor.close()
         self._conn.close()
 

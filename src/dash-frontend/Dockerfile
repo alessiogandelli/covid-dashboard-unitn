@@ -1,4 +1,4 @@
-FROM python:3.7-alpine
+FROM python:3.8
 
 USER root
 
@@ -6,10 +6,10 @@ WORKDIR /app
 
 ADD . /app
 
-RUN pip install --trusted-host pypi.python.org -r requirements.txt
+RUN pip3 install -r requirements.txt
+
+RUN ["chmod", "+x", "/app/docker_run_frontend.sh"]
 
 EXPOSE 8050
 
-ENV NAME World
-
-CMD ["python", "app/app.py"]
+CMD /app/docker_run_frontend.sh
