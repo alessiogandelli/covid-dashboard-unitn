@@ -67,6 +67,12 @@ def prepare_data(df_stats, y):
 # 
 # perform linear regression on all the regions and save the model
 
+def get_predictions(lrModel, last_day):
+    # get prediction for the next 14 days
+    predictions = []
+    for i in range(14):
+        predictions.append(lrModel.predict(Vectors.dense([last_day + i])))
+        return predictions
 
 def compute():
     df_stats, df_regions, df_age = fetch_data()
@@ -111,12 +117,10 @@ while True:
     msg = consumer.poll(1.0)
     if msg is None:
         pass
-    else:
-        
-        if msg.key().decode('utf-8') == 'compute':
-            compute()
-            print('computed', )
-            logging.info('computed')
+    elif msg.key() is not None and msg.key().decode('utf-8') == 'compute':
+        compute()
+        print('computed', )
+        logging.info('computed')
 
 
 

@@ -5,7 +5,12 @@ client = MongoClient(client)
 db = client.covid
 model_collection = db.models
 
-def get_model(model_name):
-    model = model_collection.find_one({"name": model_name})
-    print("Model retrieved from db", model['name'])
+def get_by_model(model_name):
+    model = list(model_collection.find({"name": model_name}))
+    print("Model retrieved from db", model)
+    return model
+
+def get_by_region(region_id):
+    model = list(model_collection.find({"region_id": region_id}))
+    print("Region retrieved from db", model)
     return model

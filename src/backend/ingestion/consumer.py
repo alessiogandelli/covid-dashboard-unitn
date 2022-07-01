@@ -20,7 +20,7 @@ consumer = Consumer(config)
 consumer.subscribe([c.topic])
 
 db = utils.Database('covid')
-db.clean_db()
+# db.clean_db()
 
 print("Consumer: Listen to DB")
 

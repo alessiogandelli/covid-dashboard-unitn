@@ -6,17 +6,26 @@ from dash.dependencies import Input, Output, State
 from dash import no_update
 import sys
 import mongo_db_helper
-from postgres_db_helper import Database
+from pprint import pprint
 
 app = dash.Dash(
     __name__,
     external_stylesheets=[dbc.themes.BOOTSTRAP]
 )
 
-db = Database()
+# db = Database()
 
-positive_model = mongo_db_helper.get_model("total_cases")
-age_table = db.query(sql="SELECT * FROM age")
+total_cases = mongo_db_helper.get_by_model("total_cases")
+deaths = mongo_db_helper.get_by_model("deaths")
+hospitalized = mongo_db_helper.get_by_model("hospitalized")
+intensive_care = mongo_db_helper.get_by_model("intensive_care")
+deaths = mongo_db_helper.get_by_model("deaths")
+domestic_isolation = mongo_db_helper.get_by_model("domestic_isolation")
+region = mongo_db_helper.get_by_region(1)
+pprint(deaths)
+
+region_metric = region[0]
+
 
 app.layout = dbc.Container(
     dbc.Row(
@@ -24,33 +33,76 @@ app.layout = dbc.Container(
             [
                 dbc.Card(
                     [
-                        html.H2('2 Covid Dashboard Italy' + positive_model['name'] + age_table, className='card-title'),
-                        
-                        html.Div(id='output'),
-                        dbc.Input(id='input',placeholder='Type here...'),
-
-
-                        html.Br(),
-                        dbc.Row(
-                            [
-                                dbc.Col(html.Img(src='https://picsum.photos/500',alt='random-image-1',width=500),width=6),
-                                dbc.Col(html.Img(src='https://picsum.photos/500',alt='random-image-2',width=500),width=6)
-                            ]
-                        ),
+                        html.H2('Covid Dashboard Italy', className='card-title'),
                         
                         html.Br(),
+
                         dcc.Graph(
-                            id='graph',
+                            id='graph_total_cases',
                             figure={
                                 'data': [
-                                    {'x': [1, 2, 3], 'y': [4, 1, 2], 'type': 'bar', 'name': 'SF'},
-                                    {'x': [1, 2, 3], 'y': [2, 4, 5], 'type': 'bar', 'name': 'Montréal'},
+                                    {'x': [x for x in range(14)], 'y': [((y + region_metric['day']) * region_metric['coefficients'][0]) + region_metric['intercept'] for y in range(14)], 'type': 'line', 'name': region_metric['region_id']} 
+                                    for region_metric in total_cases
                                 ],
                                 'layout': {
-                                    'title': 'Dash Data Visualization',
+                                    'title': 'Total Cases by Region',
                                 }
                             }
                         ),
+
+                        dcc.Graph(
+                            id='graph_domestic_isolation',
+                            figure={
+                                'data': [
+                                    {'x': [x for x in range(14)], 'y': [((y + region_metric['day']) * region_metric['coefficients'][0]) + region_metric['intercept'] for y in range(14)], 'type': 'line', 'name': region_metric['region_id']} 
+                                    for region_metric in domestic_isolation
+                                ],
+                                'layout': {
+                                    'title': 'Domestic Isolation by Region',
+                                }
+                            }
+                        ),
+
+                        dcc.Graph(
+                            id='graph_hospitalized',
+                            figure={
+                                'data': [
+                                    {'x': [x for x in range(14)], 'y': [((y + region_metric['day']) * region_metric['coefficients'][0]) + region_metric['intercept'] for y in range(14)], 'type': 'line', 'name': region_metric['region_id']} 
+                                    for region_metric in hospitalized
+                                ],
+                                'layout': {
+                                    'title': 'Hospitalizations by Region',
+                                }
+                            }
+                        ),
+
+                        dcc.Graph(
+                            id='graph_intensive_care',
+                            figure={
+                                'data': [
+                                    {'x': [x for x in range(14)], 'y': [((y + region_metric['day']) * region_metric['coefficients'][0]) + region_metric['intercept'] for y in range(14)], 'type': 'line', 'name': region_metric['region_id']} 
+                                    for region_metric in intensive_care
+                                ],
+                                'layout': {
+                                    'title': 'Intensive Care by Region',
+                                }
+                            }
+                        ),
+
+                        dcc.Graph(
+                            id='graph_deaths',
+                            figure={
+                                'data': [
+                                    {'x': [x for x in range(14)], 'y': [((y + region_metric['day']) * region_metric['coefficients'][0]) + region_metric['intercept'] for y in range(14)], 'type': 'line', 'name': region_metric['region_id']} 
+                                    for region_metric in deaths
+                                ],
+                                'layout': {
+                                    'title': 'Deaths by Region',
+                                }
+                            }
+                        ),
+                        
+
                     ], # end card children
                     body=True
                 ) # end card
@@ -60,11 +112,6 @@ app.layout = dbc.Container(
     ) # end row
 ) # end container
 
-
-@app.callback(
-    Output('output','children'),
-    [Input('input','value')]
-)
 def output(value):
     return value
 
