@@ -22,10 +22,6 @@ intensive_care = mongo_db_helper.get_by_model("intensive_care")
 deaths = mongo_db_helper.get_by_model("deaths")
 domestic_isolation = mongo_db_helper.get_by_model("domestic_isolation")
 region = mongo_db_helper.get_by_region(1)
-pprint(deaths)
-
-region_metric = region[0]
-
 
 app.layout = dbc.Container(
     dbc.Row(

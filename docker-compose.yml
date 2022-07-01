@@ -53,7 +53,7 @@ services:
   dash-frontend:
     image: dash-frontend
     build: ./src/dash-frontend
-    platform: linux/amd64 # Make backend work with M1 Macs
+    platform: linux/amd64 # Make frontend work with M1 Macs
     container_name: dash-frontend
     ports:
       - "8050:8050"
