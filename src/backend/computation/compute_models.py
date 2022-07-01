@@ -119,12 +119,10 @@ while True:
     msg = consumer.poll(1.0)
     if msg is None:
         pass
-    else:
-        
-        if msg.key().decode('utf-8') == 'compute':
-            compute()
-            print('computed', )
-            logging.info('computed')
+    elif msg.key() is not None and msg.key().decode('utf-8') == 'compute':
+        compute()
+        print('computed', )
+        logging.info('computed')
 
 
 
