@@ -9,7 +9,7 @@ import schedule
 import logging
 logging.basicConfig(filename='flow.log', encoding='utf-8', level=logging.INFO)
 
-
+print("producer.py")
 # Create Producer instance
 producer = Producer(utils.get_kafka_config())
 logging.info('kafka producer created')
@@ -48,7 +48,7 @@ utils.send_table(df_age, c.topic, producer, age_col)
 #schdule every day at 9 pm
 schedule.every().day.at("20:20").do(utils.update_stats, producer)
 
-
+print("Producer: Enter Loop")
 
 while True:
     schedule.run_pending()

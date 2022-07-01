@@ -7,6 +7,7 @@ from confluent_kafka import Producer
 from argparse import ArgumentParser, FileType
 from configparser import ConfigParser
 import psycopg2
+from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 from sqlalchemy import create_engine
 
 
@@ -15,7 +16,7 @@ logging.basicConfig(filename='flow.log', level=logging.DEBUG, format='%(asctime)
 
 
 def get_kafka_config(consumer = False):
-
+    print("Loading kafka config")
     # Parse the command line.
     parser = ArgumentParser()
     parser.add_argument('config_file', type=FileType('r'))
@@ -32,16 +33,32 @@ def get_kafka_config(consumer = False):
     return config 
 
 class Database:
-    def __init__(self, name):
+    def __init__(self, dbname):
+        print('connecting to default database ...')
+        self._conn = psycopg2.connect(database="postgres", host = 'db', user ='user', password = 'example')
+        self._conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
+        self._cursor = self._conn.cursor()
+
+        print("Deleting database if exists " + dbname)
+        self._cursor.execute('DROP DATABASE IF EXISTS ' + dbname)
+
+        print("Creating database " + dbname)
+        self._cursor.execute('CREATE DATABASE ' + dbname)
+
+        self._cursor.close()
+        self._conn.close()
+
+
+        print('connecting to ' + dbname)
         self._conn = psycopg2.connect(
-                            host='localhost',
-                            database='covid',
+                            host='db',
+                            database=dbname,
                             user='user',
                             password='example')
-       
         self._cursor = self._conn.cursor()
-        print('connect db')
-        logging.info('Connected to database')
+
+        print('connected to db ' + dbname)
+        logging.info('Connected to database' + dbname)
 
     def __enter__(self):
         return self
@@ -81,7 +98,7 @@ class Database:
         return self.fetchall()
     
     def from_pandas(self, df, table_name, if_exists='replace'):
-        conn_string = 'postgresql://user:example@localhost/covid'
+        conn_string = 'postgresql://user:example@db/covid'
         db = create_engine(conn_string)
         conn = db.connect()
         df.to_sql(table_name, conn, if_exists=if_exists, index=False)

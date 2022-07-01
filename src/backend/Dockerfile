@@ -1,5 +1,5 @@
-# syntax=docker/dockerfile:1
-FROM python:3.8
+FROM openjdk:slim
+COPY --from=python:3.8 / /
 
 WORKDIR /app
 
@@ -8,6 +8,7 @@ RUN pip3 install -r requirements.txt
 
 COPY . .
 
+RUN ["curl", "-O", "https://jdbc.postgresql.org/download/postgresql-42.4.0.jar"]
 RUN ["chmod", "+x", "/app/docker_run.sh"]
 
-CMD ./docker_run.sh
+CMD /app/docker_run.sh

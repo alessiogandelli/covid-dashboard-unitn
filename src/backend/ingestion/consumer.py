@@ -1,15 +1,10 @@
 #%%
-import sys
-from argparse import ArgumentParser, FileType
-from configparser import ConfigParser
 from confluent_kafka import Consumer, OFFSET_BEGINNING
-import pandas as pd
-import sqlite3
 import utils
 import constants as c
 import logging
-import psycopg2
-import os
+
+print("consumer.py")
 
 logging.basicConfig(filename='flow.log', level=logging.DEBUG)
 
@@ -27,6 +22,7 @@ consumer.subscribe([c.topic])
 db = utils.Database('covid')
 db.clean_db()
 
+print("Consumer: Listen to DB")
 
 utils.listen(consumer, db)
 
