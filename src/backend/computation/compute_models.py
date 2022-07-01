@@ -67,6 +67,12 @@ def prepare_data(df_stats, y):
 # 
 # perform linear regression on all the regions and save the model
 
+def get_predictions(lrModel, last_day):
+    # get prediction for the next 14 days
+    predictions = []
+    for i in range(14):
+        predictions.append(lrModel.predict(Vectors.dense([last_day + i])))
+        return predictions
 
 def compute():
     df_stats, df_regions, df_age = fetch_data()
@@ -87,12 +93,14 @@ def compute():
 
             lr = LinearRegression(featuresCol='features', labelCol=y, maxIter=10, regParam=0.3, elasticNetParam=0.8)
             lrModel = lr.fit(df1)
+            predictions = get_predictions(lrModel, last_day)
 
             model = {'name': y,
                      'day': last_day,
                      'region_id': i,
                      'intercept': lrModel.intercept,
-                     'coefficients': lrModel.coefficients.toArray().tolist()}
+                     'coefficients': lrModel.coefficients.toArray().tolist(),
+                     'predictions': predictions}
 
             db_helper.save_model(model)
     logging.info('computed today for all regions')

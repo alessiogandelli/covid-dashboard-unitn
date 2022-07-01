@@ -165,7 +165,7 @@ def update_stats(producer):
     producer.flush() # Flush pending messages
  
     logging.info('table stats updated')
-    producer.produce(c.topic, key = 'compute', value = str(list(row))) # if i put a string in the value it gives me name 'covid' not found 
+    producer.produce(c.topic, key = 'compute', value = str(list(row))) # if i put a string 'covid' in the value it gives me name 'covid' not found 
 
    
 
