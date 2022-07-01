@@ -7,6 +7,7 @@ from confluent_kafka import Producer
 from argparse import ArgumentParser, FileType
 from configparser import ConfigParser
 import psycopg2
+from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 from sqlalchemy import create_engine
 
 
@@ -33,15 +34,27 @@ def get_kafka_config(consumer = False):
 
 class Database:
     def __init__(self, name):
+        dbname = 'covid'
+        print('connecting to default database ...')
+        self._conn = psycopg2.connect(host = 'db', user ='user', password = 'example')
+        self._conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
+        self._cursor = self._conn.cursor()
+        print("Creating database " + dbname)
+        self._cursor.execute('CREATE DATABASE ' + dbname)
+        self._cursor.close()
+        self._conn.close()
+
+
+        print('connecting to ' + dbname)
         self._conn = psycopg2.connect(
                             host='db',
-                            database='covid',
+                            database=dbname,
                             user='user',
                             password='example')
-       
         self._cursor = self._conn.cursor()
-        print('connect db')
-        logging.info('Connected to database')
+
+        print('connected to db ' + dbname)
+        logging.info('Connected to database' + dbname)
 
     def __enter__(self):
         return self
