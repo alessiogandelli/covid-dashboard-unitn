@@ -105,7 +105,7 @@ config_consumer = {'bootstrap.servers': 'broker:9092',
 consumer = Consumer(config_consumer)
 consumer.subscribe(['covid'])
 
-print('listening..')
+print('Compute models: listening..')
 
 while True:
     msg = consumer.poll(1.0)

@@ -21,6 +21,7 @@ consumer.subscribe([c.topic])
 
 db = utils.Database('covid')
 
+print("Consumer: Listen to DB")
 
 utils.listen(consumer, db)
 
