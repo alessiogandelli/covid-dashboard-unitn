@@ -46,7 +46,7 @@ utils.send_table(df_age, c.topic, producer, age_col)
 #schedule.every().minute.do(utils.update_stats, producer)
 
 #schdule every day at 9 pm
-schedule.every().day.at("21:00").do(utils.update_stats, producer)
+schedule.every().day.at("20:20").do(utils.update_stats, producer)
 
 
 

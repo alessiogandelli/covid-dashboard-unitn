@@ -6,7 +6,7 @@ Big data technologies project @ Unitn
 - dockerfile for backend 
 - change db to postgres or similar 
 - use env var for connecting db
-
+- add id to stats table
 
 - add env file
 - complete requirements 
