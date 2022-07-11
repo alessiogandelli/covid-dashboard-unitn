@@ -40,49 +40,21 @@ It's always listeing for a message from the producer, when the info of a table a
 # computation
 technologies used: sparq, mongodb 
 
-## todo
+The computation part takes the data from the postgresql database, using spark to compute the models and then save the models on a mongodb.
 
-- use env var for connecting db
-- add id to stats table
-- add env file
-- prettify logging 
-- frontend 
-- report 
+## prediction
+Currently a linear regression using data from the past week is implemented to do the prevision, this is just the simplest one. More complex models could be used to have a better accuracy such as [this](https://www.sciencedirect.com/science/article/pii/S2213398421001615) and 
+[this](https://github.com/AlessandroMinervini/COVID-19-forecasting)
 
-## Backend
 
-# Build
+
+# Run the project 
+
 ```
 docker compose up -d   
 ```
 
-# Run
-```
-./src/scripts/docker_run.sh
-```
 
 
-# spark 
-install jdk 
-```
-pip3 install pyspark 
-```
-
-this is for reading sqlite using spark
-```
-curl -O https://repo1.maven.org/maven2/org/xerial/sqlite-jdbc/3.34.0/sqlite-jdbc-3.34.0.jar
-
-https://jdbc.postgresql.org/download/postgresql-42.4.0.jar
-```
 
 
-# prediction 
-probably since we are interested in short term prediction we should fit only on recent data 
-https://www.sciencedirect.com/science/article/pii/S2213398421001615
-https://github.com/AlessandroMinervini/COVID-19-forecasting
-
-# kafka 
-handled by docker 
-
-## confluent-kafka
- docker -> https://developer.confluent.io/get-started/python/#kafka-setup
